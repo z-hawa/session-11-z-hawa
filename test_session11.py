@@ -112,4 +112,4 @@ def test_iterable():
 def test_get_item():
     temp=Polygon(7,4)
     assert temp[5].area==Polygon(7,4).area,"Get Item is not subscripting properly"
-    assert temp[0].area==Polygon(3,4).area,"Get Item is not subscripting properly"
+    assert temp[4].area==Polygon(6,4).area,"Get Item is not subscripting properly"
