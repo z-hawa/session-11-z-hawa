@@ -1,16 +1,6 @@
-# Session 11
-## This assignment required us to refer last assignment's code and use it in this project. Here we were required to make Polygon object iterable i.e we should be able to use it in a for loop.
+import math
 
-- Google Collab Link --> [Click this](https://colab.research.google.com/drive/1FrRElBftMBwXEeVk2UNSiy3d7QT8wxoe?usp=sharing) 
-- To achieve this , I have added \_\_iter__ function to the Polygon class. This makes sure that the for loop works since the for loop always checks for a iter function before the loop starts. This iter functions makes the object into an iterator. 
 
-- By doing the above, the object is not a complete iterator. One more function is missing , and that is \_\_next__ . To achieve a proper \_\_next__ function without having to allow only one instance , I added an Iterator class , which is initialised every time a new loop (iteration) is generated.
-
-- The main purpose of the \_\_next__ function , though , is to stop the iteration when the limit (max number of iterations) has been exceeded. This was simply achieved by an if statement which raises a StopIteration error when the condition is fulfilled.
-
-- I've removed the properties from the Polygon class in the code below since they weren't the main objective in this assignment.
-
-```py
 class Polygon:
     def __init__(self, n, R):
         if n < 3:
@@ -20,7 +10,53 @@ class Polygon:
         
     def __repr__(self):
         return f'Polygon(n={self._n}, R={self._R})'
+    
+    @property
+    def count_vertices(self):
+        return self._n
+    
+    @property
+    def count_edges(self):
+        return self._n
+    
+    @property
+    def circumradius(self):
+        return self._R
+    
+    @property
+    def interior_angle(self):
+        return (self._n - 2) * 180 / self._n
 
+    @property
+    def side_length(self):
+        return 2 * self._R * math.sin(math.pi / self._n)
+    
+    @property
+    def apothem(self):
+        return self._R * math.cos(math.pi / self._n)
+    
+    @property
+    def area(self):
+        return self._n / 2 * self.side_length * self.apothem
+    
+    @property
+    def perimeter(self):
+        return self._n * self.side_length
+    
+    def __eq__(self, other):
+        '''Checks if a polygon object is equal to the current object'''
+        if isinstance(other, self.__class__):
+            return (self.count_edges == other.count_edges 
+                    and self.circumradius == other.circumradius)
+        else:
+            return NotImplemented
+        
+    def __gt__(self, other):
+        '''Checks if a polygon object is greater than the current object'''
+        if isinstance(other, self.__class__):
+            return self.count_vertices > other.count_vertices
+        else:
+            return NotImplemented
     def __len__(self) -> int:
         '''Returns the length of this Polygon instance'''
         return self.MaxVertice - 2  # Since Polygons with less than 3 sides do not exist
@@ -48,6 +84,7 @@ class Polygon:
             return [self[n] for n in RangeOfNumbersToGet]
     
     def __iter__(self):
+        '''Function that initialises the Iteration class for the iteration'''
         return self.PolygonIters(self)
     
     class PolygonIters:
@@ -56,16 +93,20 @@ class Polygon:
             self._index = 3
             
         def __iter__(self):
-            print("Calling CityIterator instance __iter__")
+            '''Function to initialise the iteration'''
             return self
         
         def __next__(self):
+            '''Function to iterate over the polygon class'''
             if self._index >= self._polygon_obj._n:
                 raise StopIteration
             else:
                 item = Polygon(self._index,self._polygon_obj._R)
                 self._index += 1
                 return item
-```
 
-- Note - I haven't added many test cases this time , but I've kept some related to the assignment and some related to the ones required everytime.
+temp=Polygon(7,5)
+for i in temp:
+    print(i.area,i.perimeter)
+print("iter in Polygon"," | Next in PolygonIteration")
+print("__iter__" in dir(Polygon),"                      ","__next__" in dir(Polygon.PolygonIters))
